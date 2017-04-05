@@ -25,8 +25,8 @@ class TestCorrelationAnalysis(unittest.TestCase):
         self.tau_max = 100.*10
 
     def test_mean(self):
-        v = np.array([np.random.normal(i, self.v_var, self.T)
-                     for i in xrange(self.N)])
+        v = np.array([np.random.normal(i, self.v_var, int(self.T))
+                      for i in xrange(self.N)])
         v_units = ctana.mean(v, units=True)
         v_time = ctana.mean(v, time=True)
         v_units_time = ctana.mean(v, units=True, time=True)
@@ -38,14 +38,14 @@ class TestCorrelationAnalysis(unittest.TestCase):
         self.assertTrue(abs(v_units_time_true - v_units_time) < 1e-2)
 
     def test_compound_mean(self):
-        v = np.array([np.random.normal(i, self.v_var, self.T)
+        v = np.array([np.random.normal(i, self.v_var, int(self.T))
                      for i in xrange(self.N)])
         v_compound = ctana.compound_mean(v)
         v_compound_true = np.mean(np.sum(v, axis=0))
         self.assertTrue(abs(v_compound_true - v_compound) < 1e-15)
 
     def test_variance(self):
-        v = np.array([np.random.normal(self.v_mu, np.sqrt(i + 1), self.T)
+        v = np.array([np.random.normal(self.v_mu, np.sqrt(i + 1), int(self.T))
                      for i in xrange(self.N)])
         v_units = ctana.variance(v, units=True)
         v_time = ctana.variance(v, time=True)
@@ -58,7 +58,7 @@ class TestCorrelationAnalysis(unittest.TestCase):
         self.assertTrue(abs(v_units_time_true - v_units_time) < 1e-1)
 
     def test_compound_variance(self):
-        v = np.array([np.random.normal(self.v_mu, np.sqrt(i + 1), self.T)
+        v = np.array([np.random.normal(self.v_mu, np.sqrt(i + 1), int(self.T))
                      for i in xrange(self.N)])
         v_compound = ctana.compound_variance(v)
         v_compound_true = np.var(np.sum(v, axis=0))
@@ -279,9 +279,9 @@ class TestCorrelationAnalysis(unittest.TestCase):
         time_auto, autof = ctana.autocorrfunc_time(sp_srt, self.tau_max, self.tbin, self.T)
         for i in xrange(Nloceff):
             if len(autof[i]) % 2 == 0:
-                mid = len(autof[i]) / 2 - 1
+                mid = int(len(autof[i]) / 2 - 1)
             else:
-                mid = np.floor(len(autof[i]) / 2.)
+                mid = int(np.floor(len(autof[i]) / 2.))
             offset = self.tbin / self.T * \
                 (self.rate + self.rate ** 2 * self.T * 1e-3)
             # a(0) == rate+offset
@@ -293,9 +293,9 @@ class TestCorrelationAnalysis(unittest.TestCase):
         lim = len(autof) / 4
         time_auto, autof = ctana.autocorrfunc_time(sp_srt, self.tau_max, self.tbin, self.T, units=True)
         if len(autof) % 2 == 0:
-            mid = len(autof) / 2 - 1
+            mid = int(len(autof) / 2 - 1)
         else:
-            mid = np.floor(len(autof) / 2.)
+            mid = int(np.floor(len(autof) / 2.))
         offset = self.p * self.tbin / self.T * \
             (self.rate + self.rate ** 2 * self.T * 1e-3)
         # mean(a(0)) == p*rate+offset
