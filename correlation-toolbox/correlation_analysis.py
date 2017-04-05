@@ -149,15 +149,15 @@ def spectrogram(data, tbin, twindow, Df=None, units=False, N=None, measure='powe
     sg = []
     freq = []
     if measure == 'power':
-        for i in xrange(n_windows):
+        for i in range(n_windows):
             freq, power = powerspec(data[:, i * steps_window:(i + 1) * steps_window], tbin, Df=Df, units=units, N=N)
             sg.append(power)
     elif measure == 'cross':
-        for i in xrange(n_windows):
+        for i in range(n_windows):
             freq, cross = crossspec(data[:, i * steps_window:(i + 1) * steps_window], tbin, Df=Df, units=units, N=N)
             sg.append(cross)
     elif measure == 'compound_power':
-        for i in xrange(n_windows):
+        for i in range(n_windows):
             freq, compound_power = compound_powerspec(data[:, i * steps_window:(i + 1) * steps_window], tbin, Df=Df)
             sg.append(compound_power)
     else:
@@ -305,8 +305,8 @@ def crossspec(data, tbin, Df=None, units=False, N=None):
             cut = int(Df / df)
             freq = freq[cut:]
         CRO = np.zeros((N, N, len(freq)), dtype=complex)
-        for i in xrange(N):
-            for j in xrange(i + 1):
+        for i in range(N):
+            for j in range(i + 1):
                 tempij = DATA[i] * DATA[j].conj()
                 if Df is not None:
                     tempij = cthlp.movav(tempij, Df, df)[cut:]
@@ -376,7 +376,7 @@ def autocorrfunc(freq, power):
     if multidata:
         N = len(power)
         autof = np.zeros((N, len(freq)))
-        for i in xrange(N):
+        for i in range(N):
             raw_autof = np.real(np.fft.ifft(power[i]))
             mid = int(len(raw_autof) / 2.)
             autof[i] = np.hstack([raw_autof[mid + 1:], raw_autof[:mid + 1]])
@@ -471,7 +471,7 @@ def crosscorrfunc(freq, cross):
     if multidata:
         N = len(cross)
         crossf = np.zeros((N, N, len(freq)))
-        for i in xrange(N):
+        for i in range(N):
             for j in range(N):
                 raw_crossf = np.real(np.fft.ifft(cross[i, j]))
                 mid = int(len(raw_crossf) / 2.)
@@ -519,10 +519,10 @@ def corrcoef(time, crossf, integration_window=0.):
         mid = len(time)/2-1
     else:
         mid = np.floor(len(time)/2.)
-    for i in xrange(N):
+    for i in range(N):
         ai = np.sum(crossf[i, i][mid - lim:mid + lim + 1])
         offset_autoi = np.mean(crossf[i,i][:mid-1])
-        for j in xrange(N):
+        for j in range(N):
             cij = np.sum(crossf[i, j][mid - lim:mid + lim + 1])
             offset_cross = np.mean(crossf[i,j][:mid-1])
             aj = np.sum(crossf[j, j][mid - lim:mid + lim + 1])
@@ -565,8 +565,8 @@ def coherence(freq, power, freq_cross, cross):
     if len(np.shape(cross)) > 1:
         N = len(power)
         coh = np.zeros_like(cross)
-        for i in xrange(N):
-            for j in xrange(N):
+        for i in range(N):
+            for j in range(N):
                 coh[i, j] = cross[i, j] / np.sqrt(power[i] * power[j])
         assert(len(freq) == len(coh[0, 0]))
     else:

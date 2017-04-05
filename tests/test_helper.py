@@ -32,7 +32,7 @@ class TestHelper(unittest.TestCase):
         self.assertEqual(self.N, len(sp_ids))  # N
         self.assertTrue(self.T >= np.max([np.max(x)
                         for x in sp_srt if len(x) > 0]))  # T
-        for i in xrange(self.N):
+        for i in range(self.N):
             emp_rate = 1. * len(sp_srt[i]) / self.T * 1e3
             assert(emp_rate >= 0.)
             if emp_rate > 0.:
@@ -68,8 +68,8 @@ class TestHelper(unittest.TestCase):
         self.assertTrue(self.T >= np.max(bins))  # T
         emp_cc = np.corrcoef(cthlp.strip_binned_spiketrains(bsp))
         emp_a_cc = []
-        for i in xrange(self.Neff):
-            for j in xrange(self.Neff):
+        for i in range(self.Neff):
+            for j in range(self.Neff):
                 if i != j:
                     emp_a_cc.append(emp_cc[i, j])
         emp_mu_cc = 1. / (self.N * (self.N - 1.)) * np.sum(emp_a_cc)
