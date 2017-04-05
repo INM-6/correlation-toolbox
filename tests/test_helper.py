@@ -28,7 +28,7 @@ class TestHelper(unittest.TestCase):
     def test_sort_gdf_by_id(self):
         # create N-5 poisson instead of N, creates empty arrays in sp_srt
         sp = cthlp.create_poisson_spiketrains(self.rate, self.T, self.Neff)
-        sp_ids, sp_srt = cthlp.sort_gdf_by_id(sp, 0, self.N)
+        sp_ids, sp_srt = cthlp.sort_gdf_by_id(sp, 0, self.N - 1)
         self.assertEqual(self.N, len(sp_ids))  # N
         self.assertTrue(self.T >= np.max([np.max(x)
                         for x in sp_srt if len(x) > 0]))  # T
@@ -43,7 +43,7 @@ class TestHelper(unittest.TestCase):
         # create N-5 poisson instead of N, creates empty arrays in sp_srt
         # to test binning for empty spiketrains
         sp = cthlp.create_poisson_spiketrains(self.rate, self.T, self.Neff)
-        sp_ids, sp_srt = cthlp.sort_gdf_by_id(sp, 0, self.N)
+        sp_ids, sp_srt = cthlp.sort_gdf_by_id(sp, 0, self.N - 1)
         bins, bsp = cthlp.instantaneous_spike_count(sp_srt, self.tbin)
 
         # test whether binning produces correct results
@@ -60,7 +60,7 @@ class TestHelper(unittest.TestCase):
         # create N-5 poisson instead of N, changes correlation
         sp = cthlp.create_correlated_spiketrains_sip(
             self.rate, self.T, self.Neff, self.cc)
-        sp_ids, sp_srt = cthlp.sort_gdf_by_id(sp, 0, self.N)
+        sp_ids, sp_srt = cthlp.sort_gdf_by_id(sp, 0, self.N - 1)
         bins, bsp = cthlp.instantaneous_spike_count(sp_srt, self.tbin)
         emp_rate = 1. * np.sum(bsp) / self.T * 1e3 / self.N
         self.assertTrue(abs(self.p * self.rate - emp_rate) < 5e-1)  # rate
@@ -90,14 +90,14 @@ class TestHelper(unittest.TestCase):
 
     def test_strip_sorted_spiketrains(self):
         sp = cthlp.create_poisson_spiketrains(self.rate, self.T, self.Neff)
-        sp_ids, sp_srt = cthlp.sort_gdf_by_id(sp, 0., self.N)
+        sp_ids, sp_srt = cthlp.sort_gdf_by_id(sp, 0., self.N - 1)
         self.assertEqual(self.N, len(sp_srt))
         sp_srt = cthlp.strip_sorted_spiketrains(sp_srt)
         self.assertEqual(self.Neff, len(sp_srt))
 
     def test_strip_binned_spiketrains(self):
         sp = cthlp.create_poisson_spiketrains(self.rate, self.T, self.Neff)
-        sp_ids, sp_srt = cthlp.sort_gdf_by_id(sp, 0., self.N)
+        sp_ids, sp_srt = cthlp.sort_gdf_by_id(sp, 0., self.N - 1)
         bins, bsp = cthlp.instantaneous_spike_count(sp_srt, self.tbin)
         self.assertEqual(self.N, len(bsp))
         bsp = cthlp.strip_binned_spiketrains(bsp)
