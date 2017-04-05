@@ -90,14 +90,14 @@ class TestHelper(unittest.TestCase):
 
     def test_strip_sorted_spiketrains(self):
         sp = cthlp.create_poisson_spiketrains(self.rate, self.T, self.Neff)
-        sp_ids, sp_srt = cthlp.sort_gdf_by_id(sp, 0., self.N - 1)
+        sp_ids, sp_srt = cthlp.sort_gdf_by_id(sp, 0, self.N - 1)
         self.assertEqual(self.N, len(sp_srt))
         sp_srt = cthlp.strip_sorted_spiketrains(sp_srt)
         self.assertEqual(self.Neff, len(sp_srt))
 
     def test_strip_binned_spiketrains(self):
         sp = cthlp.create_poisson_spiketrains(self.rate, self.T, self.Neff)
-        sp_ids, sp_srt = cthlp.sort_gdf_by_id(sp, 0., self.N - 1)
+        sp_ids, sp_srt = cthlp.sort_gdf_by_id(sp, 0, self.N - 1)
         bins, bsp = cthlp.instantaneous_spike_count(sp_srt, self.tbin)
         self.assertEqual(self.N, len(bsp))
         bsp = cthlp.strip_binned_spiketrains(bsp)
