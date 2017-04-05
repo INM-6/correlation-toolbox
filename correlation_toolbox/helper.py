@@ -1,6 +1,7 @@
 # global imports
 import numpy as np
 import copy
+from future.builtins import range
 import quantities as pq
 
 ##################################################################
@@ -20,24 +21,24 @@ def create_poisson_spiketrains(rate, T, N):
     N = int(N)
     times = np.sort(np.hstack(
         [T * np.random.uniform(size=np.random.poisson(rate * T * 1e-3))
-         for _ in xrange(N)]))
+         for _ in range(N)]))
     ids = np.random.random_integers(0, N - 1, len(times))
-    return np.array(zip(ids, times))
+    return np.array(list(zip(ids, times)))
 
 
 def create_gamma_spiketrains(rate, T, N, k):
     N = int(N)
     size = int(1.5 * rate * T)
     times = np.hstack([np.cumsum([np.random.gamma(rate, k, size=size)])
-                      for i in xrange(N)])
-    ids = np.hstack([[i] * size for i in xrange(N)])
+                      for i in range(N)])
+    ids = np.hstack([[i] * size for i in range(N)])
     keep = np.where(times < T)
     times = times[keep]
     ids = ids[keep]
     srt = np.argsort(times)
     times = times[srt]
     ids = ids[srt]
-    return np.array(zip(ids, times))
+    return np.array(list(zip(ids, times)))
 
 
 def sort_gdf_by_id(data, idmin=None, idmax=None):
@@ -74,7 +75,7 @@ def sort_gdf_by_id(data, idmin=None, idmax=None):
             srt.append(np.sort(data[np.where(data[:, 0] == i)[0], 1]))
         return ids, srt
     else:
-        print 'CT warning(sort_spiketrains_by_id): empty gdf data!'
+        print('CT warning(sort_spiketrains_by_id): empty gdf data!')
         return None, None
 
 
@@ -145,7 +146,7 @@ def gdf_to_neo(data,
         block.segments.append(seg)
         return block
     else:
-        print 'CT warning(sort_spiketrains_by_id): empty gdf data!'
+        print('CT warning(sort_spiketrains_by_id): empty gdf data!')
         return
 
 
@@ -166,7 +167,7 @@ def sort_membrane_by_id(data, idmin=None, idmax=None):
         tim = np.sort(data[np.where(data[0:,0] == ids[0])[0],1])
         return ids, tim, srt
     else:
-        print 'CT warning(sort_membrane_by_id): empty membrane data!'
+        print('CT warning(sort_membrane_by_id): empty membrane data!')
         return None,None,None
 
 

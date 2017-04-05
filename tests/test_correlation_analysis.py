@@ -1,6 +1,7 @@
 # global imports
 import unittest
 import numpy as np
+from future.builtins import range
 
 # local imports
 import correlation_toolbox.helper as cthlp
@@ -26,7 +27,7 @@ class TestCorrelationAnalysis(unittest.TestCase):
 
     def test_mean(self):
         v = np.array([np.random.normal(i, self.v_var, int(self.T))
-                      for i in xrange(self.N)])
+                      for i in range(self.N)])
         v_units = ctana.mean(v, units=True)
         v_time = ctana.mean(v, time=True)
         v_units_time = ctana.mean(v, units=True, time=True)
@@ -39,14 +40,14 @@ class TestCorrelationAnalysis(unittest.TestCase):
 
     def test_compound_mean(self):
         v = np.array([np.random.normal(i, self.v_var, int(self.T))
-                     for i in xrange(self.N)])
+                     for i in range(self.N)])
         v_compound = ctana.compound_mean(v)
         v_compound_true = np.mean(np.sum(v, axis=0))
         self.assertTrue(abs(v_compound_true - v_compound) < 1e-15)
 
     def test_variance(self):
         v = np.array([np.random.normal(self.v_mu, np.sqrt(i + 1), int(self.T))
-                     for i in xrange(self.N)])
+                     for i in range(self.N)])
         v_units = ctana.variance(v, units=True)
         v_time = ctana.variance(v, time=True)
         v_units_time = ctana.variance(v, units=True, time=True)
@@ -59,7 +60,7 @@ class TestCorrelationAnalysis(unittest.TestCase):
 
     def test_compound_variance(self):
         v = np.array([np.random.normal(self.v_mu, np.sqrt(i + 1), int(self.T))
-                     for i in xrange(self.N)])
+                     for i in range(self.N)])
         v_compound = ctana.compound_variance(v)
         v_compound_true = np.var(np.sum(v, axis=0))
         self.assertTrue(abs(v_compound_true - v_compound) < 1e-15)
@@ -69,19 +70,19 @@ class TestCorrelationAnalysis(unittest.TestCase):
         sp_ids, sp_srt = cthlp.sort_gdf_by_id(sp, 0, self.N)
         bins, bsp = cthlp.instantaneous_spike_count(sp_srt, self.tbin)
         freq, power = ctana.powerspec(bsp, self.tbin)
-        for i in xrange(self.N):
+        for i in range(self.N):
             # power(0) == 1./T*integral(s(t))**2 == 1./T*sum(s_binned)**2
             self.assertTrue(
                 abs(power[i][0] - 1. / self.T * 1e3
                     * (np.sum(bsp[i])) ** 2) < 1e-15)
         bsp = cthlp.centralize(bsp, time=True)
         freq, power = ctana.powerspec(bsp, self.tbin)
-        for i in xrange(self.N):
+        for i in range(self.N):
             # power(0) == 0
             self.assertTrue(abs(power[i][0]) < 1e-15)
 
         auto = np.array([np.fft.ifft(x) for x in power])
-        for i in xrange(self.N):
+        for i in range(self.N):
             if np.sum(power[i]) > 0.:
                 # power == rate (flat spectrum for poisson with power == rate)
                 self.assertTrue(
@@ -128,8 +129,8 @@ class TestCorrelationAnalysis(unittest.TestCase):
         self.assertEqual(len(freq_power), len(freq_cross))
         self.assertEqual(np.min(freq_power), np.min(freq_cross))
         self.assertEqual(np.max(freq_power), np.max(freq_cross))
-        for i in xrange(Nloc):
-            for j in xrange(Nloc):
+        for i in range(Nloc):
+            for j in range(Nloc):
                 if i != j:
                     # poisson trains are uncorrelated
                     self.assertTrue(abs(np.mean(cross[i, j])) < 1e0)
@@ -188,8 +189,8 @@ class TestCorrelationAnalysis(unittest.TestCase):
         freq_cross, cross = ctana.crossspec(bsp, self.tbin, Df=self.Df)
         df = freq_cross[1] - freq_cross[0]
         a_lfcoh = []
-        for i in xrange(Nloc):
-            for j in xrange(Nloc):
+        for i in range(Nloc):
+            for j in range(Nloc):
                 if i != j:
                     if np.sum(cross[i, i]) > 0. and np.sum(cross[j, j]) > 0.:
                         lfcoh = np.mean(
@@ -235,7 +236,7 @@ class TestCorrelationAnalysis(unittest.TestCase):
         # freq_cross,cross = ctana.crossspec(bsp,self.tbin,units=True)
         time_auto, autof = ctana.autocorrfunc(freq, power)
         # time_cross,crossf = ctana.crosscorrfunc(freq_cross,cross)
-        for i in xrange(Nloceff):
+        for i in range(Nloceff):
             if len(autof[i]) % 2 == 0:
                 mid = len(autof[i]) / 2 - 1
             else:
@@ -250,7 +251,7 @@ class TestCorrelationAnalysis(unittest.TestCase):
                 abs(np.mean(autof[i][:mid - 1]) - offset) < offset * 2e-1)
         freq, power = ctana.powerspec(bsp, self.tbin, units=True)
         time_auto, autof = ctana.autocorrfunc(freq, power)
-        print autof
+        print(autof)
         if len(autof) % 2 == 0:
             mid = len(autof) / 2 - 1
         else:
@@ -263,11 +264,11 @@ class TestCorrelationAnalysis(unittest.TestCase):
         # test offset (see notes)
         self.assertTrue(abs(np.mean(autof[:mid - 1]) - offset) < offset * 2e-1)
         # symmetry of autocorrelation function
-        lim = len(autof) / 4
-        print autof[mid - lim + 1:mid], len(autof[mid - lim + 1:mid])
-        print (autof[mid + 1:mid + lim])[::-1], len(autof[mid + 1:mid + lim][::-1])
-        print abs(np.sum(autof[mid - lim + 1:mid] -
-                                   (autof[mid + 1:mid + lim])[::-1]))
+        lim = int(np.floor(len(autof) / 4))
+        print(autof[mid - lim + 1:mid], len(autof[mid - lim + 1:mid]))
+        print((autof[mid + 1:mid + lim])[::-1], len(autof[mid + 1:mid + lim][::-1]))
+        print(abs(np.sum(autof[mid - lim + 1:mid] -
+                                   (autof[mid + 1:mid + lim])[::-1])))
         self.assertTrue(abs(np.sum(autof[mid - lim + 1:mid] -
                                    (autof[mid + 1:mid + lim])[::-1])) < 1e-12)
 
@@ -277,7 +278,7 @@ class TestCorrelationAnalysis(unittest.TestCase):
         sp = cthlp.create_poisson_spiketrains(self.rate, self.T, Nloceff)
         sp_ids, sp_srt = cthlp.sort_gdf_by_id(sp, 0, Nloc)
         time_auto, autof = ctana.autocorrfunc_time(sp_srt, self.tau_max, self.tbin, self.T)
-        for i in xrange(Nloceff):
+        for i in range(Nloceff):
             if len(autof[i]) % 2 == 0:
                 mid = int(len(autof[i]) / 2 - 1)
             else:
@@ -329,10 +330,10 @@ class TestCorrelationAnalysis(unittest.TestCase):
             mid = np.floor(len(crossf[0, 0]) / 2.)
         offset = self.tbin / self.T * \
             (self.rate + self.rate ** 2 * self.T * 1e-3)
-        for i in xrange(Nloceff):
+        for i in range(Nloceff):
             # consistency check with auto-correlation function
             self.assertTrue(abs(np.sum(autof[i] - crossf[i, i])) < 1e-10)
-            for j in xrange(Nloceff):
+            for j in range(Nloceff):
                 if i != j:
                     # c(0) = corrcoef*rate+offset
                     self.assertTrue(
@@ -380,8 +381,8 @@ class TestCorrelationAnalysis(unittest.TestCase):
         time_cross, crossf = ctana.crosscorrfunc(freq_cross, cross)
 
         corrcoef = ctana.corrcoef(time_cross, crossf)
-        for i in xrange(Nloc):
-            for j in xrange(Nloc):
+        for i in range(Nloc):
+            for j in range(Nloc):
                 if i < Nloceff and j < Nloceff:
                     if i == j:
                         self.assertTrue(abs(corrcoef[i, j] - 1.) < 1e-12)
