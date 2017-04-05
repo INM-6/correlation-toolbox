@@ -263,7 +263,7 @@ class TestCorrelationAnalysis(unittest.TestCase):
         # test offset (see notes)
         self.assertTrue(abs(np.mean(autof[:mid - 1]) - offset) < offset * 2e-1)
         # symmetry of autocorrelation function
-        lim = np.floor(len(autof) / 4)
+        lim = int(np.floor(len(autof) / 4))
         print(autof[mid - lim + 1:mid], len(autof[mid - lim + 1:mid]))
         print((autof[mid + 1:mid + lim])[::-1], len(autof[mid + 1:mid + lim][::-1]))
         print(abs(np.sum(autof[mid - lim + 1:mid] -
