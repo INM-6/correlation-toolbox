@@ -77,8 +77,8 @@ class TestHelper(unittest.TestCase):
         self.assertTrue(abs(self.p ** 2 * self.cc - emp_mu_cc) < 2e-2)
 
     def test_centralize(self):
-        v1 = np.random.normal(-50, 2, self.T * 1e1)
-        v2 = np.random.normal(-30, 2, self.T * 1e1)
+        v1 = np.random.normal(-50, 2, int(self.T * 1e1))
+        v2 = np.random.normal(-30, 2, int(self.T * 1e1))
         v_cen_time = cthlp.centralize([v1, v2], time=True)
         for v in v_cen_time:
             self.assertTrue(abs(np.mean(v)) < 1e-12)
