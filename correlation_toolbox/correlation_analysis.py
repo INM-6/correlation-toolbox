@@ -517,10 +517,11 @@ def corrcoef(time, crossf, integration_window=0.):
     tbin = abs(time[1] - time[0])
     lim = int(integration_window / tbin)
     if len(time)%2 == 0:
-        mid = len(time)/2-1
+        mid = int(len(time)/2-1)
     else:
-        mid = np.floor(len(time)/2.)
+        mid = int(np.floor(len(time)/2.))
     for i in range(N):
+
         ai = np.sum(crossf[i, i][mid - lim:mid + lim + 1])
         offset_autoi = np.mean(crossf[i,i][:mid-1])
         for j in range(N):

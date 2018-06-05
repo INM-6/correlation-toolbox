@@ -238,9 +238,9 @@ class TestCorrelationAnalysis(unittest.TestCase):
         # time_cross,crossf = ctana.crosscorrfunc(freq_cross,cross)
         for i in range(Nloceff):
             if len(autof[i]) % 2 == 0:
-                mid = len(autof[i]) / 2 - 1
+                mid = int(len(autof[i]) / 2 - 1)
             else:
-                mid = np.floor(len(autof[i]) / 2.)
+                mid = int(np.floor(len(autof[i]) / 2.))
             offset = self.tbin / self.T * \
                 (self.rate + self.rate ** 2 * self.T * 1e-3)
             # a(0) == rate+offset
@@ -253,9 +253,9 @@ class TestCorrelationAnalysis(unittest.TestCase):
         time_auto, autof = ctana.autocorrfunc(freq, power)
         print(autof)
         if len(autof) % 2 == 0:
-            mid = len(autof) / 2 - 1
+            mid = int(len(autof) / 2 - 1)
         else:
-            mid = np.floor(len(autof) / 2.)
+            mid = int(np.floor(len(autof) / 2.))
         offset = self.p * self.tbin / self.T * \
             (self.rate + self.rate ** 2 * self.T * 1e-3)
         # mean(a(0)) == p*rate+offset
@@ -325,9 +325,9 @@ class TestCorrelationAnalysis(unittest.TestCase):
         time_cross, crossf = ctana.crosscorrfunc(freq_cross, cross)
 
         if len(crossf[0, 0]) % 2 == 0:
-            mid = len(crossf[0, 0]) / 2 - 1
+            mid = int(len(crossf[0, 0]) / 2 - 1)
         else:
-            mid = np.floor(len(crossf[0, 0]) / 2.)
+            mid = int(np.floor(len(crossf[0, 0]) / 2.))
         offset = self.tbin / self.T * \
             (self.rate + self.rate ** 2 * self.T * 1e-3)
         for i in range(Nloceff):
