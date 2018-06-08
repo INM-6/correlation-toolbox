@@ -4,7 +4,7 @@ from setuptools import setup
 setup(
     name='correlation-toolbox',
     version='0.0.1',
-    author='Jakob Jordan, David Dahmen',
+    author='Jakob Jordan, David Dahmen, Hannah Bos, Maximilian Schmidt',
     author_email='j.jordan@fz-juelich.de',
     description=('Collection of functions to investigate correlations in '
                  'spike trains and membrane potentials.'),
