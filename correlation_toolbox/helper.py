@@ -71,6 +71,8 @@ def sort_gdf_by_id(data, idmin=None, idmax=None):
     srt = []
     for i in ids:
         srt.append(np.sort(data[np.where(data[:, 0] == i)[0], 1]))
+    if len(ids) == 0:
+        print('CT warning(sort_spiketrains_by_id): empty gdf data!')
     return ids, srt
 
 
