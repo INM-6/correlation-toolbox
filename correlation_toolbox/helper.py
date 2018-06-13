@@ -2,7 +2,6 @@
 import numpy as np
 import copy
 from future.builtins import range
-import quantities as pq
 
 ##################################################################
 # functions for handling spike train data
@@ -64,19 +63,17 @@ def sort_gdf_by_id(data, idmin=None, idmax=None):
     assert((idmin is None and idmax is None)
            or (idmin is not None and idmax is not None))
 
-    if len(data) > 0:
-        # get neuron ids
-        if idmin is None and idmax is None:
-            ids = np.unique(data[:, 0])
-        else:
-            ids = np.arange(idmin, idmax+1)
-        srt = []
-        for i in ids:
-            srt.append(np.sort(data[np.where(data[:, 0] == i)[0], 1]))
-        return ids, srt
+    # get neuron ids
+    if idmin is None and idmax is None:
+        ids = np.unique(data[:, 0])
     else:
+        ids = np.arange(idmin, idmax+1)
+    srt = []
+    for i in ids:
+        srt.append(np.sort(data[np.where(data[:, 0] == i)[0], 1]))
+    if len(ids) == 0:
         print('CT warning(sort_spiketrains_by_id): empty gdf data!')
-        return None, None
+    return ids, srt
 
 
 def gdf_to_neo(data,
@@ -129,20 +126,20 @@ def gdf_to_neo(data,
             if seg.index == index:
                 # append the spike trains to the existing segment
                 for i, idx in enumerate(ids):
-                    seg.spiketrains.append( \
+                    seg.spiketrains.append(
                         neo.core.SpikeTrain(srt[i]*quantity,
                                             t_start=t_start,
                                             t_stop=t_stop,
-                                            annotations={'unit_id':idx}))
+                                            annotations={'unit_id': idx}))
                 return block
         # if a segment of the given index does not exist, yet, create it
         seg = neo.core.Segment(index=index)
         for i, idx in enumerate(ids):
-            seg.spiketrains.append( \
+            seg.spiketrains.append(
                 neo.core.SpikeTrain(srt[i]*quantity,
                                     t_start=t_start,
                                     t_stop=t_stop,
-                                    annotations={'unit_id':idx}))
+                                    annotations={'unit_id': idx}))
         block.segments.append(seg)
         return block
     else:
@@ -158,17 +155,17 @@ def sort_membrane_by_id(data, idmin=None, idmax=None):
     '''
     if len(data) > 0:
         if idmin is None and idmax is None:
-            ids = np.unique(data[0:,0])
+            ids = np.unique(data[0:, 0])
         else:
             ids = np.arange(idmin, idmax)
         srt = []
         for i in ids:
-            srt.append(data[np.where(data[0:,0] == i)[0],2])
-        tim = np.sort(data[np.where(data[0:,0] == ids[0])[0],1])
+            srt.append(data[np.where(data[0:, 0] == i)[0], 2])
+        tim = np.sort(data[np.where(data[0:, 0] == ids[0])[0], 1])
         return ids, tim, srt
     else:
         print('CT warning(sort_membrane_by_id): empty membrane data!')
-        return None,None,None
+        return None, None, None
 
 
 def instantaneous_spike_count(data, tbin, tmin=None, tmax=None):
